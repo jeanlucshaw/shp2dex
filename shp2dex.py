@@ -264,6 +264,49 @@ def plot_cis_shp(sname, target=None, suffix=None, decimate=10, **ax_kw):
     plt.show()
 
 
+# def _get_lon_lat_converter(filename):
+#     """
+#     Return conversion function from map coordinates to longitudes and latitudes.
+
+#     When a projection string file (.prj) is present next to the
+#     analysed shapefile, use the Cartopy package to define a conversion
+#     function from the map projection (typically LCC) to Plate carree,
+#     longitude and latitude coordinates. Returns None is no (.prj) file
+#     is found. This usually means shapes are already in Plate carree
+#     coordinates.
+
+#     Parameters
+#     ----------
+#     filename : str
+#         Path and name of the analysed shapefile (.shp).
+
+#     Returns
+#     -------
+#     callable or None
+#         Converter function: lon, lat = func(x, y) .
+
+#     """
+
+#     # Read projection file
+#     if os.path.exists(filename[0:-4]+".prj"):
+#         _, lat0, lon0, std1, std2, a, ifp = _parse_prj(filename[0:-4] + ".prj")
+
+#         # Datum
+#         b = a * (ifp - 1) / ifp
+#         globe = ccrs.Globe(semimajor_axis=a, semiminor_axis=b)
+#         lcc = ccrs.LambertConformal(standard_parallels=(std1, std2),
+#                                     globe=globe,
+#                                     central_latitude=lat0,
+#                                     central_longitude=lon0)
+
+#         def to_lon_lat(x, y):
+#             transformed = ccrs.PlateCarree().transform_points(lcc, x, y)
+#             return transformed[:, 0], transformed[:, 1]
+
+#     else:
+#         to_lon_lat = None
+
+#     return to_lon_lat
 def _get_lon_lat_converter(filename):
     """
     Return conversion function from map coordinates to longitudes and latitudes.
@@ -271,7 +314,7 @@ def _get_lon_lat_converter(filename):
     When a projection string file (.prj) is present next to the
     analysed shapefile, use the Cartopy package to define a conversion
     function from the map projection (typically LCC) to Plate carree,
-    longitude and latitude coordinates. Returns None is no (.prj) file
+    longitude and latitude coordinates. Returns None if no (.prj) file
     is found. This usually means shapes are already in Plate carree
     coordinates.
 
@@ -289,18 +332,27 @@ def _get_lon_lat_converter(filename):
 
     # Read projection file
     if os.path.exists(filename[0:-4]+".prj"):
-        _, lat0, lon0, std1, std2, a, ifp = _parse_prj(filename[0:-4] + ".prj")
+        crs_kw, globe_kw = _parse_prj(filename[0:-4] + ".prj")
 
         # Datum
-        b = a * (ifp - 1) / ifp
-        globe = ccrs.Globe(semimajor_axis=a, semiminor_axis=b)
-        lcc = ccrs.LambertConformal(standard_parallels=(std1, std2),
-                                    globe=globe,
-                                    central_latitude=lat0,
-                                    central_longitude=lon0)
+        globe = ccrs.Globe(**globe_kw)
+
+        # Older files in Lambert Conformal conic projection
+        if crs_kw['proj'] == 'lcc':
+            proj = ccrs.LambertConformal(standard_parallels=(crs_kw['std1'],
+                                                             crs_kw['std2']),
+                                         globe=globe,
+                                         central_latitude=crs_kw['lat0'],
+                                         central_longitude=crs_kw['lon0'])
+
+        # Newer files (2023 onwards) in north polar stereographic projection
+        elif crs_kw['proj'] == 'snp':
+            proj = ccrs.NorthPolarStereo(true_scale_latitude=crs_kw['std1'],
+                                         globe=globe,
+                                         central_longitude=crs_kw['lon0'])
 
         def to_lon_lat(x, y):
-            transformed = ccrs.PlateCarree().transform_points(lcc, x, y)
+            transformed = ccrs.PlateCarree().transform_points(proj, x, y)
             return transformed[:, 0], transformed[:, 1]
 
     else:
@@ -726,13 +778,100 @@ def _newegg_2_oldegg(egg_dict, sname, i):
     return egg_dict
 
 
+# def _parse_prj(fname):
+#     """
+#     Parse shapefile (.prj) for projection parameters.
+
+#     Geographical projection information for shapefile data is
+#     contained in a companion file with the extension `.prj`. The
+#     Basemap class instance needs this information to convert
+#     polygon coordinates from map units (m) to longitudes and
+#     latitudes.
+
+#     Parameters
+#     ----------
+#     fname : str
+#         Name of the projection file.
+
+#     Returns
+#     -------
+#     proj : str
+#         Projection name abbreviated for input to Basemap.
+#     lat0 : float
+#         Latitude of origin.
+#     lon0 : float
+#         Longitude of origin.
+#     std1 : float
+#         Standard parallel 1 used by LCC projection.
+#     std2 : float
+#         Standard parallel 2 used by LCC projection.
+#     a : float
+#         Datum semi-major radius.
+#     ifp : float
+#         Inverse flattening parameter. Used to obtain the Datum
+#         semi-minor radius.
+
+#     Note
+#     ----
+#         For the moment, only Lambert conformal conic projections
+#         are supported.
+
+#     """
+
+#     # Init output
+#     proj = None
+#     lat0 = None
+#     lon0 = None
+#     std1 = None
+#     std2 = None
+#     a = None
+#     ifp = None
+
+#     # Read file
+#     file = open(fname, 'r')
+#     string = file.readline()
+
+#     # Set up regex
+#     rx_dict = {'proj': re.compile(r'PROJECTION\["(.*)"\],',
+#                                   re.IGNORECASE),
+#                'lat0': re.compile(r'PARAMETER\["latitude_of_origin",([-\.\d]*)\]',
+#                                   re.IGNORECASE),
+#                'lon0': re.compile(r'PARAMETER\["central_meridian",([-\.\d]*)\]',
+#                                   re.IGNORECASE),
+#                'std1': re.compile(r'PARAMETER\["standard_parallel_1",([-\.\d]*)\]',
+#                                   re.IGNORECASE),
+#                'std2': re.compile(r'PARAMETER\["standard_parallel_2",([-\.\d]*)\]',
+#                                   re.IGNORECASE),
+#                'rsph': re.compile(r'SPHEROID\[.*,([-\.\d]*),([-\.\d]*)\]',
+#                                   re.IGNORECASE)}
+
+#     # Match regex
+#     for key, rx in rx_dict.items():
+#         match = rx.search(string, re.IGNORECASE)
+#         if match:
+#             if key == "proj":
+#                 if match.group(1) == "Lambert_Conformal_Conic":
+#                     proj = 'lcc'
+#             if key == "lat0":
+#                 lat0 = float(match.group(1))
+#             if key == "lon0":
+#                 lon0 = float(match.group(1))
+#             if key == "std1":
+#                 std1 = float(match.group(1))
+#             if key == "std2":
+#                 std2 = float(match.group(1))
+#             if key == "rsph":
+#                 a = float(match.group(1))
+#                 ifp = float(match.group(2))
+
+#     return proj, lat0, lon0, std1, std2, a, ifp
 def _parse_prj(fname):
     """
     Parse shapefile (.prj) for projection parameters.
 
     Geographical projection information for shapefile data is
     contained in a companion file with the extension `.prj`. The
-    Basemap class instance needs this information to convert
+    Cartopy class instance needs this information to convert
     polygon coordinates from map units (m) to longitudes and
     latitudes.
 
@@ -743,43 +882,22 @@ def _parse_prj(fname):
 
     Returns
     -------
-    proj : str
-        Projection name abbreviated for input to Basemap.
-    lat0 : float
-        Latitude of origin.
-    lon0 : float
-        Longitude of origin.
-    std1 : float
-        Standard parallel 1 used by LCC projection.
-    std2 : float
-        Standard parallel 2 used by LCC projection.
-    a : float
-        Datum semi-major radius.
-    ifp : float
-        Inverse flattening parameter. Used to obtain the Datum
-        semi-minor radius.
+    crs_kw : dict
+        keyword arguments used to define the cartopy CRS instance.
+    globe_kw : dict
+        keyword arguments used to define the globe model.
 
     Note
     ----
-        For the moment, only Lambert conformal conic projections
-        are supported.
+        For the moment, only Lambert conformal conic and north
+        polar stereographic projections are supported.
 
     """
 
-    # Init output
-    proj = None
-    lat0 = None
-    lon0 = None
-    std1 = None
-    std2 = None
-    a = None
-    ifp = None
-
     # Read file
-    file = open(fname, 'r')
-    string = file.readline()
+    string = open(fname, 'r').readline()
 
-    # Set up regex
+    # Set up regex instances
     rx_dict = {'proj': re.compile(r'PROJECTION\["(.*)"\],',
                                   re.IGNORECASE),
                'lat0': re.compile(r'PARAMETER\["latitude_of_origin",([-\.\d]*)\]',
@@ -790,29 +908,41 @@ def _parse_prj(fname):
                                   re.IGNORECASE),
                'std2': re.compile(r'PARAMETER\["standard_parallel_2",([-\.\d]*)\]',
                                   re.IGNORECASE),
+               'feast': re.compile(r'PARAMETER\["False_Easting",([-\.\d]*)\]',
+                                  re.IGNORECASE),
+               'fnorth': re.compile(r'PARAMETER\["False_Northing",([-\.\d]*)\]',
+                                  re.IGNORECASE),
                'rsph': re.compile(r'SPHEROID\[.*,([-\.\d]*),([-\.\d]*)\]',
                                   re.IGNORECASE)}
 
     # Match regex
+    crs_kwargs, globe_kwargs = dict(), dict()
     for key, rx in rx_dict.items():
         match = rx.search(string, re.IGNORECASE)
         if match:
             if key == "proj":
                 if match.group(1) == "Lambert_Conformal_Conic":
-                    proj = 'lcc'
+                    crs_kwargs['proj'] = 'lcc'
+                if match.group(1) == "Stereographic_North_Pole":
+                    crs_kwargs['proj'] = 'snp'
             if key == "lat0":
-                lat0 = float(match.group(1))
+                crs_kwargs['lat0'] = float(match.group(1))
             if key == "lon0":
-                lon0 = float(match.group(1))
+                crs_kwargs['lon0'] = float(match.group(1))
             if key == "std1":
-                std1 = float(match.group(1))
+                crs_kwargs['std1'] = float(match.group(1))
             if key == "std2":
-                std2 = float(match.group(1))
+                crs_kwargs['std2'] = float(match.group(1))
+            if key == "feast":
+                crs_kwargs['false_easting'] = float(match.group(1))
+            if key == "fnorth":
+                crs_kwargs['false_northting'] = float(match.group(1))
             if key == "rsph":
-                a = float(match.group(1))
+                globe_kwargs['semimajor_axis'] = float(match.group(1))
                 ifp = float(match.group(2))
+                globe_kwargs['semiminor_axis'] = float(match.group(1)) * (ifp - 1) / ifp
 
-    return proj, lat0, lon0, std1, std2, a, ifp
+    return crs_kwargs, globe_kwargs
 
 
 def _show_cis_field(fname, field, tc, bc):
