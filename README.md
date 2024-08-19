@@ -70,6 +70,9 @@ at `/usr/local/bin/` containing the following lines,
 /path/to/python /path/to/shp2dex/shp2dex.py "$@"
 ```
 
+The module `shp2dex` was designed using Python 3.7 . Although this version is now [no longer supported](https://devguide.python.org/versions/), users are recommended to use this version in a virutal environment with `shp2dex`. It may work
+fine with more recent Python versions but this has not been tested. 
+
 ## Note
 More background information can be found at the following links:
 
