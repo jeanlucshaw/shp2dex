@@ -75,7 +75,7 @@ More background information can be found at the following links:
 
    * [About the Egg code and CIS data products](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manice-manual-of-ice/chapter-5.htm)
 
-   * [About the SIGRID-3 shapefile format used by the CIS](https://www.jcomm.info/index.php?option=com_oe&task=viewDocumentRecord&docID=4439)
+   * [About the SIGRID-3 shapefile format used by the CIS](http://dx.doi.org/10.25607/OBP-1498.2)
 
    * [CIS sea ice glossary](https://www.canada.ca/en/environment-climate-change/services/ice-forecasts-observations/latest-conditions/glossary.html)
 
