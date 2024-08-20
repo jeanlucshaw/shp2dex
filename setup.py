@@ -12,7 +12,7 @@ setup(
     author='Jean-Luc Shaw',
     author_email='your-email@example.com',  # Replace with actual email
     url='https://github.com/jeanlucshaw/shp2dex',
-    packages=find_packages(),  # Automatically finds packages in the repository
+    packages=["shp2dex"],  # Automatically finds packages in the repository
     install_requires=read_requirements(),
     classifiers=[
         'Programming Language :: Python :: 3',
