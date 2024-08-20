@@ -51,6 +51,7 @@ matplotlib
 shapely
 numpy
 pandas
+xarray
 termcolor
 ```
 
