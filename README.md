@@ -55,7 +55,7 @@ conda env create -f requirements.yml
 or to do the same using `pip`:
 
 ```
-python -m venv .shp2dex  # or use virtualenv env
+python -m venv .shp2dex
 source .shp2dex/bin/activate
 pip install -r requirements.txt
 ```
