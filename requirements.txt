@@ -1,0 +1,55 @@
+backcall==0.2.0
+brotlipy==0.7.0
+Cartopy @ file:///home/conda/feedstock_root/build_artifacts/cartopy_1589818690810/work
+certifi==2020.6.20
+cffi==1.14.0
+chardet==3.0.4
+cryptography==2.9.2
+cycler==0.10.0
+decorator==4.4.2
+GDAL==3.1.1
+gsw==3.3.1
+idna @ file:///tmp/build/80754af9/idna_1593446292537/work
+ipython @ file:///tmp/build/80754af9/ipython_1593447368578/work
+ipython-genutils==0.2.0
+jedi @ file:///tmp/build/80754af9/jedi_1592841891421/work
+kiwisolver==1.2.0
+matplotlib @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-base_1592576108701/work
+mkl-fft==1.1.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+numpy==1.18.5
+obsub==0.2
+olefile==0.46
+OWSLib==0.19.2
+pandas @ file:///tmp/build/80754af9/pandas_1592841632039/work
+parso==0.7.0
+pexpect==4.8.0
+pickleshare==0.7.5
+Pillow==7.1.2
+prompt-toolkit==3.0.5
+ptyprocess==0.6.0
+pycparser==2.20
+PyCRC==1.21
+pyepsg==0.4.0
+Pygments==2.6.1
+pynmea2==1.15.0
+pyOpenSSL==19.1.0
+pyparsing==2.4.7
+pyproj @ file:///home/conda/feedstock_root/build_artifacts/pyproj_1588596070165/work
+pyshp==2.1.0
+PySocks==1.7.1
+python-dateutil==2.8.1
+pytz==2020.1
+PyYAML==5.3.1
+requests @ file:///tmp/build/80754af9/requests_1592841827918/work
+scipy @ file:///tmp/build/80754af9/scipy_1592930510235/work
+Shapely==1.7.0
+six==1.15.0
+termcolor==1.1.0
+tornado==6.0.4
+tqdm @ file:///tmp/build/80754af9/tqdm_1593446365756/work
+traitlets==4.3.3
+urllib3==1.25.9
+wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
+xarray==0.15.1
