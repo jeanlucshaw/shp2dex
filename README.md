@@ -38,28 +38,26 @@ $ shp2dex -h
 
 ## Installation
 
-Ensure the following packages are installed to your python environement
+Clone this repository into your local machine at your preferred location.
 
 ```
-argparse
-os
-re
-warnings
-shapefile
-cartopy
-matplotlib
-shapely
-numpy
-pandas
-xarray
-termcolor
-```
-
-Clone this repository into a the path of your Python environment. For Anaconda virutal environments, this could be
-
-```
-cd /opt/anaconda3/myEnv/lib/Python3.7/site-packages
 git clone https://github.com/jeanlucshaw/shp2dex.git shp2dex
+```
+
+
+The recommended way to use `shp2dex` is inside a virtual environment. To build a compatible environment
+with `conda`, navigate to the `shp2dex` folder and run:
+
+```
+conda env create -f requirements.yml
+```
+
+or to do the same using `pip`:
+
+```
+python -m venv .shp2dex  # or use virtualenv env
+source .shp2dex/bin/activate
+pip install -r requirements.txt
 ```
 
 For this utility to be available at the command line, add a
