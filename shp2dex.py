@@ -69,7 +69,7 @@ import shapefile
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.path as mpltPath
-from shapely.geometry import Point, Polygon
+# from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
 from termcolor import cprint, colored
@@ -113,21 +113,21 @@ def in_polygon(xpts, ypts, x_poly, y_poly, lib='mpl'):
         True for points inside polygon.
 
     """
-    if lib == 'shp':
-        # Polygon border
-        poly = Polygon([(xp, yp) for (xp, yp) in zip(x_poly, y_poly)])
+    # if lib == 'shp':
+    #     # Polygon border
+    #     poly = Polygon([(xp, yp) for (xp, yp) in zip(x_poly, y_poly)])
 
-        # Bool vector
-        boolean = [poly.contains(Point(x_pt, y_pt))
-                   for (x_pt, y_pt)
-                   in zip(xpts, ypts)]
-    else:
-        # Set up input
-        pts = np.array([xpts, ypts]).T
-        poly = mpltPath.Path([[xp, yp] for (xp, yp) in zip(x_poly, y_poly)])
+    #     # Bool vector
+    #     boolean = [poly.contains(Point(x_pt, y_pt))
+    #                for (x_pt, y_pt)
+    #                in zip(xpts, ypts)]
+    # else:
+    # Set up input
+    pts = np.array([xpts, ypts]).T
+    poly = mpltPath.Path([[xp, yp] for (xp, yp) in zip(x_poly, y_poly)])
 
-        # Bool vector
-        boolean =  poly.contains_points(pts)
+    # Bool vector
+    boolean =  poly.contains_points(pts)
 
     return boolean
 
