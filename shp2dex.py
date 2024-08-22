@@ -505,14 +505,22 @@ def _manage_shapefile_types(dataframe):
         dataframe = dataframe.rename(mapper, axis=1)
 
         # Convert legend labels
-        dataframe.at[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
-        dataframe.at[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
-        dataframe.at[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
-        dataframe.at[(dataframe.LEGEND == 'Ice free') |
-                     (dataframe.LEGEND == 'Bergy water') |
-                     (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
-        dataframe.at[(dataframe.LEGEND == 'Remote egg') |
-                     (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
+        # dataframe.at[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
+        # dataframe.at[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
+        # dataframe.at[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
+        # dataframe.at[(dataframe.LEGEND == 'Ice free') |
+        #              (dataframe.LEGEND == 'Bergy water') |
+        #              (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
+        # dataframe.at[(dataframe.LEGEND == 'Remote egg') |
+        #              (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
+        dataframe.loc[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
+        dataframe.loc[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
+        dataframe.loc[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
+        dataframe.loc[(dataframe.LEGEND == 'Ice free') |
+                      (dataframe.LEGEND == 'Bergy water') |
+                      (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
+        dataframe.loc[(dataframe.LEGEND == 'Remote egg') |
+                      (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
     # Type B
     elif ('POLY_TYPE' in dataframe.keys()) and ('E_CT' not in dataframe.keys()):
         # Rename egg code columns
