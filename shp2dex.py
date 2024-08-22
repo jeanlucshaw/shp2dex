@@ -576,10 +576,11 @@ def _manage_shapefile_types(dataframe):
         for i in dataframe.index.values:
             raw = dataframe.iloc[i][fields]
             translated = _newegg_2_oldegg(raw, 'bla', i)  # second argument for error handling
-            print("")
-            print(translated)
-            print("")
-            dataframe.at[i, translated.keys()] = translated.values
+            # print("")
+            # print(translated.keys(), type(translated.keys()), translated.values, type(translated.values))
+            # print("")
+            # dataframe.at[i, translated.keys()] = translated.values
+            dataframe.loc[i, translated.keys()] = translated.values
 
     # Type C
     elif 'SGD_POLY_T' in dataframe.keys():
@@ -1157,40 +1158,44 @@ def _shp2dex(sname,
                 # Index of points to write
                 if target_index.size > 0:
                     # For improved readability
-                    r = df_records.iloc[i]
+                    r = df_records.iloc[i].copy()
 
                     """ Legend assignments """
+                    ### Replace .at with .loc in this block ###
                     # Fast-ice
                     if ("F" == r.LEGEND) or r.E_FA == '8':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Fast-ice'
-                        df_output.at[target_index, 'printable'] = 'Fast-ice'
+                            df_output.loc[target_index, 'LEGEND'] = 'Fast-ice'
+                        df_output.loc[target_index, 'printable'] = 'Fast-ice'
                     # On land
                     elif r.LEGEND == 'L':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Land'
-                        df_output.at[target_index, 'printable'] = 'Land'
+                            df_output.loc[target_index, 'LEGEND'] = 'Land'
+                        df_output.loc[target_index, 'printable'] = 'Land'
                     # Missing data
                     elif r.LEGEND == 'N':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'missing'
-                        df_output.at[target_index, 'printable'] = 'missing'
+                            df_output.loc[target_index, 'LEGEND'] = 'missing'
+                        df_output.loc[target_index, 'printable'] = 'missing'
                     # Open water
                     elif (r.LEGEND == 'W') or (r.E_CT == 'X' and r.E_CA == 'X'):
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'IF'
-                        df_output.at[target_index, 'printable'] = 'IF'
+                            df_output.loc[target_index, 'LEGEND'] = 'IF'
+                        df_output.loc[target_index, 'printable'] = 'IF'
                     # Icebergs
                     elif (r.E_SA == '98' and r.E_FA == '10'):
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Icebergs'
-                        df_output.at[target_index, 'printable'] = 'Icebergs'
+                            df_output.loc[target_index, 'LEGEND'] = 'Icebergs'
+                        df_output.loc[target_index, 'printable'] = 'Icebergs'
+                    ### Replace .at with .loc in this block ###
 
                     # Egg code assignments
                     else:
                         # Partial concentration A is set to CT in this case
                         if r.E_CT != 'X' and r.E_CA == 'X':
                             r.at['E_CA'] = r['E_CT']
+                            # print(r)
+                            # r['E_CA'] = r['E_CT']
 
                         # Create egg code string in dex format
                         format_egg = '%s  %s %s %s' % (r.E_CT.rjust(2),
@@ -1214,31 +1219,31 @@ def _shp2dex(sname,
 
                         # Write to dataframe
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Egg'
-                        df_output.at[target_index, 'printable'] = format_egg
+                            df_output.loc[target_index, 'LEGEND'] = 'Egg'
+                        df_output.loc[target_index, 'printable'] = format_egg
 
                     # Assign egg code
                     if fill_dataframe:
                         for egg in egg_strs:
-                            df_output.at[target_index, egg] = r[egg]
+                            df_output.loc[target_index, egg] = r[egg]
 
                     # No need to check these grid points again
-                    df_output.at[target_index, 'assigned'] = True
+                    df_output.loc[target_index, 'assigned'] = True
 
         # Unassigned points are considered missing
         if fill_dataframe:
             for egg in egg_strs:
-                df_output.at[(~df_output['assigned']), egg] = 'X'
-            df_output.at[(~df_output['assigned']), 'LEGEND'] = 'missing'
-        df_output.at[(~df_output['assigned']), 'printable'] = 'missing'
+                df_output.loc[(~df_output['assigned']), egg] = 'X'
+            df_output.loc[(~df_output['assigned']), 'LEGEND'] = 'missing'
+        df_output.loc[(~df_output['assigned']), 'printable'] = 'missing'
 
     else:
         # This happens when the shapefile is empty
         warn('Shapefile is empty: returning "missing" for all grid points in dex')
         for egg in egg_strs:
-            df_output.at[:, egg] = 'X'
-        df_output.at[:, 'LEGEND'] = 'missing'
-        df_output.at[:, 'printable'] = 'missing'
+            df_output.loc[:, egg] = 'X'
+        df_output.loc[:, 'LEGEND'] = 'missing'
+        df_output.loc[:, 'printable'] = 'missing'
 
     # Reverse longitude sign if specified at input
     df_output['lon'] *= sign
