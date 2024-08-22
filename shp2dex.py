@@ -65,14 +65,14 @@ import argparse
 import os
 import re
 from warnings import warn
-import shapefile
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.path as mpltPath
 # from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
-from termcolor import cprint, colored
+# from termcolor import cprint, colored
+import shapefile
 
 
 __all__ = ['in_polygon',
@@ -575,7 +575,10 @@ def _manage_shapefile_types(dataframe):
         # Translate to old egg code for each entry
         for i in dataframe.index.values:
             raw = dataframe.iloc[i][fields]
-            translated = _newegg_2_oldegg(raw, 'bla', i)
+            translated = _newegg_2_oldegg(raw, 'bla', i)  # second argument for error handling
+            print("")
+            print(translated)
+            print("")
             dataframe.at[i, translated.keys()] = translated.values
 
     # Type C
