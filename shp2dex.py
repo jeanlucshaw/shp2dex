@@ -68,7 +68,7 @@ from warnings import warn
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.path as mpltPath
-# from shapely.geometry import Point, Polygon
+from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
 # from termcolor import cprint, colored
@@ -113,21 +113,21 @@ def in_polygon(xpts, ypts, x_poly, y_poly, lib='mpl'):
         True for points inside polygon.
 
     """
-    # if lib == 'shp':
-    #     # Polygon border
-    #     poly = Polygon([(xp, yp) for (xp, yp) in zip(x_poly, y_poly)])
+    if lib == 'shp':
+        # Polygon border
+        poly = Polygon([(xp, yp) for (xp, yp) in zip(x_poly, y_poly)])
 
-    #     # Bool vector
-    #     boolean = [poly.contains(Point(x_pt, y_pt))
-    #                for (x_pt, y_pt)
-    #                in zip(xpts, ypts)]
-    # else:
-    # Set up input
-    pts = np.array([xpts, ypts]).T
-    poly = mpltPath.Path([[xp, yp] for (xp, yp) in zip(x_poly, y_poly)])
+        # Bool vector
+        boolean = [poly.contains(Point(x_pt, y_pt))
+                   for (x_pt, y_pt)
+                   in zip(xpts, ypts)]
+    else:
+        # Set up input
+        pts = np.array([xpts, ypts]).T
+        poly = mpltPath.Path([[xp, yp] for (xp, yp) in zip(x_poly, y_poly)])
 
-    # Bool vector
-    boolean =  poly.contains_points(pts)
+        # Bool vector
+        boolean =  poly.contains_points(pts)
 
     return boolean
 
@@ -264,49 +264,6 @@ def plot_cis_shp(sname, target=None, suffix=None, decimate=10, **ax_kw):
     plt.show()
 
 
-# def _get_lon_lat_converter(filename):
-#     """
-#     Return conversion function from map coordinates to longitudes and latitudes.
-
-#     When a projection string file (.prj) is present next to the
-#     analysed shapefile, use the Cartopy package to define a conversion
-#     function from the map projection (typically LCC) to Plate carree,
-#     longitude and latitude coordinates. Returns None is no (.prj) file
-#     is found. This usually means shapes are already in Plate carree
-#     coordinates.
-
-#     Parameters
-#     ----------
-#     filename : str
-#         Path and name of the analysed shapefile (.shp).
-
-#     Returns
-#     -------
-#     callable or None
-#         Converter function: lon, lat = func(x, y) .
-
-#     """
-
-#     # Read projection file
-#     if os.path.exists(filename[0:-4]+".prj"):
-#         _, lat0, lon0, std1, std2, a, ifp = _parse_prj(filename[0:-4] + ".prj")
-
-#         # Datum
-#         b = a * (ifp - 1) / ifp
-#         globe = ccrs.Globe(semimajor_axis=a, semiminor_axis=b)
-#         lcc = ccrs.LambertConformal(standard_parallels=(std1, std2),
-#                                     globe=globe,
-#                                     central_latitude=lat0,
-#                                     central_longitude=lon0)
-
-#         def to_lon_lat(x, y):
-#             transformed = ccrs.PlateCarree().transform_points(lcc, x, y)
-#             return transformed[:, 0], transformed[:, 1]
-
-#     else:
-#         to_lon_lat = None
-
-#     return to_lon_lat
 def _get_lon_lat_converter(filename):
     """
     Return conversion function from map coordinates to longitudes and latitudes.
