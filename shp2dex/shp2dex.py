@@ -65,7 +65,6 @@ import argparse
 import os
 import re
 from warnings import warn
-import shapefile
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.path as mpltPath
@@ -73,6 +72,7 @@ from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
 from termcolor import cprint, colored
+import shapefile
 
 
 __all__ = ['in_polygon',
@@ -127,7 +127,7 @@ def in_polygon(xpts, ypts, x_poly, y_poly, lib='mpl'):
         poly = mpltPath.Path([[xp, yp] for (xp, yp) in zip(x_poly, y_poly)])
 
         # Bool vector
-        boolean =  poly.contains_points(pts)
+        boolean = poly.contains_points(pts)
 
     return boolean
 
@@ -247,13 +247,16 @@ def plot_cis_shp(sname, target=None, suffix=None, decimate=10, **ax_kw):
 
         # Add to plot
         if df_managed.iloc[i].LEGEND == 'L':
-            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k', linestyle='-', lw=0.5, zorder=df_size)
+            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k',
+                    linestyle='-', lw=0.5, zorder=df_size)
 
         elif target is None:
-            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k', linestyle='-', lw=0.5, zorder=i)
+            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k',
+                    linestyle='-', lw=0.5, zorder=i)
 
         elif i in target:
-            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k', linestyle='-', lw=0.5, zorder=i)
+            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k',
+                    linestyle='-', lw=0.5, zorder=i)
 
     # Plot parameters
     ax.set(xlabel='Longitude', ylabel='Latitude', **ax_kw)
@@ -264,52 +267,9 @@ def plot_cis_shp(sname, target=None, suffix=None, decimate=10, **ax_kw):
     plt.show()
 
 
-# def _get_lon_lat_converter(filename):
-#     """
-#     Return conversion function from map coordinates to longitudes and latitudes.
-
-#     When a projection string file (.prj) is present next to the
-#     analysed shapefile, use the Cartopy package to define a conversion
-#     function from the map projection (typically LCC) to Plate carree,
-#     longitude and latitude coordinates. Returns None is no (.prj) file
-#     is found. This usually means shapes are already in Plate carree
-#     coordinates.
-
-#     Parameters
-#     ----------
-#     filename : str
-#         Path and name of the analysed shapefile (.shp).
-
-#     Returns
-#     -------
-#     callable or None
-#         Converter function: lon, lat = func(x, y) .
-
-#     """
-
-#     # Read projection file
-#     if os.path.exists(filename[0:-4]+".prj"):
-#         _, lat0, lon0, std1, std2, a, ifp = _parse_prj(filename[0:-4] + ".prj")
-
-#         # Datum
-#         b = a * (ifp - 1) / ifp
-#         globe = ccrs.Globe(semimajor_axis=a, semiminor_axis=b)
-#         lcc = ccrs.LambertConformal(standard_parallels=(std1, std2),
-#                                     globe=globe,
-#                                     central_latitude=lat0,
-#                                     central_longitude=lon0)
-
-#         def to_lon_lat(x, y):
-#             transformed = ccrs.PlateCarree().transform_points(lcc, x, y)
-#             return transformed[:, 0], transformed[:, 1]
-
-#     else:
-#         to_lon_lat = None
-
-#     return to_lon_lat
 def _get_lon_lat_converter(filename):
     """
-    Return conversion function from map coordinates to longitudes and latitudes.
+    Return conversion function from map coordinates to longitudes and latitudes
 
     When a projection string file (.prj) is present next to the
     analysed shapefile, use the Cartopy package to define a conversion
@@ -548,14 +508,14 @@ def _manage_shapefile_types(dataframe):
         dataframe = dataframe.rename(mapper, axis=1)
 
         # Convert legend labels
-        dataframe.at[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
-        dataframe.at[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
-        dataframe.at[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
-        dataframe.at[(dataframe.LEGEND == 'Ice free') |
-                     (dataframe.LEGEND == 'Bergy water') |
-                     (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
-        dataframe.at[(dataframe.LEGEND == 'Remote egg') |
-                     (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
+        dataframe.loc[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
+        dataframe.loc[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
+        dataframe.loc[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
+        dataframe.loc[(dataframe.LEGEND == 'Ice free') |
+                      (dataframe.LEGEND == 'Bergy water') |
+                      (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
+        dataframe.loc[(dataframe.LEGEND == 'Remote egg') |
+                      (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
     # Type B
     elif ('POLY_TYPE' in dataframe.keys()) and ('E_CT' not in dataframe.keys()):
         # Rename egg code columns
@@ -575,8 +535,8 @@ def _manage_shapefile_types(dataframe):
         # Translate to old egg code for each entry
         for i in dataframe.index.values:
             raw = dataframe.iloc[i][fields]
-            translated = _newegg_2_oldegg(raw, 'bla', i)
-            dataframe.at[i, translated.keys()] = translated.values
+            translated = _newegg_2_oldegg(raw, 'bla', i)  # second argument for error handling
+            dataframe.loc[i, translated.keys()] = translated.values
 
     # Type C
     elif 'SGD_POLY_T' in dataframe.keys():
@@ -778,93 +738,6 @@ def _newegg_2_oldegg(egg_dict, sname, i):
     return egg_dict
 
 
-# def _parse_prj(fname):
-#     """
-#     Parse shapefile (.prj) for projection parameters.
-
-#     Geographical projection information for shapefile data is
-#     contained in a companion file with the extension `.prj`. The
-#     Basemap class instance needs this information to convert
-#     polygon coordinates from map units (m) to longitudes and
-#     latitudes.
-
-#     Parameters
-#     ----------
-#     fname : str
-#         Name of the projection file.
-
-#     Returns
-#     -------
-#     proj : str
-#         Projection name abbreviated for input to Basemap.
-#     lat0 : float
-#         Latitude of origin.
-#     lon0 : float
-#         Longitude of origin.
-#     std1 : float
-#         Standard parallel 1 used by LCC projection.
-#     std2 : float
-#         Standard parallel 2 used by LCC projection.
-#     a : float
-#         Datum semi-major radius.
-#     ifp : float
-#         Inverse flattening parameter. Used to obtain the Datum
-#         semi-minor radius.
-
-#     Note
-#     ----
-#         For the moment, only Lambert conformal conic projections
-#         are supported.
-
-#     """
-
-#     # Init output
-#     proj = None
-#     lat0 = None
-#     lon0 = None
-#     std1 = None
-#     std2 = None
-#     a = None
-#     ifp = None
-
-#     # Read file
-#     file = open(fname, 'r')
-#     string = file.readline()
-
-#     # Set up regex
-#     rx_dict = {'proj': re.compile(r'PROJECTION\["(.*)"\],',
-#                                   re.IGNORECASE),
-#                'lat0': re.compile(r'PARAMETER\["latitude_of_origin",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'lon0': re.compile(r'PARAMETER\["central_meridian",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'std1': re.compile(r'PARAMETER\["standard_parallel_1",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'std2': re.compile(r'PARAMETER\["standard_parallel_2",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'rsph': re.compile(r'SPHEROID\[.*,([-\.\d]*),([-\.\d]*)\]',
-#                                   re.IGNORECASE)}
-
-#     # Match regex
-#     for key, rx in rx_dict.items():
-#         match = rx.search(string, re.IGNORECASE)
-#         if match:
-#             if key == "proj":
-#                 if match.group(1) == "Lambert_Conformal_Conic":
-#                     proj = 'lcc'
-#             if key == "lat0":
-#                 lat0 = float(match.group(1))
-#             if key == "lon0":
-#                 lon0 = float(match.group(1))
-#             if key == "std1":
-#                 std1 = float(match.group(1))
-#             if key == "std2":
-#                 std2 = float(match.group(1))
-#             if key == "rsph":
-#                 a = float(match.group(1))
-#                 ifp = float(match.group(2))
-
-#     return proj, lat0, lon0, std1, std2, a, ifp
 def _parse_prj(fname):
     """
     Parse shapefile (.prj) for projection parameters.
@@ -909,9 +782,9 @@ def _parse_prj(fname):
                'std2': re.compile(r'PARAMETER\["standard_parallel_2",([-\.\d]*)\]',
                                   re.IGNORECASE),
                'feast': re.compile(r'PARAMETER\["False_Easting",([-\.\d]*)\]',
-                                  re.IGNORECASE),
+                                   re.IGNORECASE),
                'fnorth': re.compile(r'PARAMETER\["False_Northing",([-\.\d]*)\]',
-                                  re.IGNORECASE),
+                                    re.IGNORECASE),
                'rsph': re.compile(r'SPHEROID\[.*,([-\.\d]*),([-\.\d]*)\]',
                                   re.IGNORECASE)}
 
@@ -1154,40 +1027,42 @@ def _shp2dex(sname,
                 # Index of points to write
                 if target_index.size > 0:
                     # For improved readability
-                    r = df_records.iloc[i]
+                    r = df_records.iloc[i].copy()
 
                     """ Legend assignments """
                     # Fast-ice
                     if ("F" == r.LEGEND) or r.E_FA == '8':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Fast-ice'
-                        df_output.at[target_index, 'printable'] = 'Fast-ice'
+                            df_output.loc[target_index, 'LEGEND'] = 'Fast-ice'
+                        df_output.loc[target_index, 'printable'] = 'Fast-ice'
                     # On land
                     elif r.LEGEND == 'L':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Land'
-                        df_output.at[target_index, 'printable'] = 'Land'
+                            df_output.loc[target_index, 'LEGEND'] = 'Land'
+                        df_output.loc[target_index, 'printable'] = 'Land'
                     # Missing data
                     elif r.LEGEND == 'N':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'missing'
-                        df_output.at[target_index, 'printable'] = 'missing'
+                            df_output.loc[target_index, 'LEGEND'] = 'missing'
+                        df_output.loc[target_index, 'printable'] = 'missing'
                     # Open water
                     elif (r.LEGEND == 'W') or (r.E_CT == 'X' and r.E_CA == 'X'):
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'IF'
-                        df_output.at[target_index, 'printable'] = 'IF'
+                            df_output.loc[target_index, 'LEGEND'] = 'IF'
+                        df_output.loc[target_index, 'printable'] = 'IF'
                     # Icebergs
                     elif (r.E_SA == '98' and r.E_FA == '10'):
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Icebergs'
-                        df_output.at[target_index, 'printable'] = 'Icebergs'
+                            df_output.loc[target_index, 'LEGEND'] = 'Icebergs'
+                        df_output.loc[target_index, 'printable'] = 'Icebergs'
 
                     # Egg code assignments
                     else:
                         # Partial concentration A is set to CT in this case
                         if r.E_CT != 'X' and r.E_CA == 'X':
                             r.at['E_CA'] = r['E_CT']
+                            # print(r)
+                            # r['E_CA'] = r['E_CT']
 
                         # Create egg code string in dex format
                         format_egg = '%s  %s %s %s' % (r.E_CT.rjust(2),
@@ -1211,31 +1086,31 @@ def _shp2dex(sname,
 
                         # Write to dataframe
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Egg'
-                        df_output.at[target_index, 'printable'] = format_egg
+                            df_output.loc[target_index, 'LEGEND'] = 'Egg'
+                        df_output.loc[target_index, 'printable'] = format_egg
 
                     # Assign egg code
                     if fill_dataframe:
                         for egg in egg_strs:
-                            df_output.at[target_index, egg] = r[egg]
+                            df_output.loc[target_index, egg] = r[egg]
 
                     # No need to check these grid points again
-                    df_output.at[target_index, 'assigned'] = True
+                    df_output.loc[target_index, 'assigned'] = True
 
         # Unassigned points are considered missing
         if fill_dataframe:
             for egg in egg_strs:
-                df_output.at[(~df_output['assigned']), egg] = 'X'
-            df_output.at[(~df_output['assigned']), 'LEGEND'] = 'missing'
-        df_output.at[(~df_output['assigned']), 'printable'] = 'missing'
+                df_output.loc[(~df_output['assigned']), egg] = 'X'
+            df_output.loc[(~df_output['assigned']), 'LEGEND'] = 'missing'
+        df_output.loc[(~df_output['assigned']), 'printable'] = 'missing'
 
     else:
         # This happens when the shapefile is empty
         warn('Shapefile is empty: returning "missing" for all grid points in dex')
         for egg in egg_strs:
-            df_output.at[:, egg] = 'X'
-        df_output.at[:, 'LEGEND'] = 'missing'
-        df_output.at[:, 'printable'] = 'missing'
+            df_output.loc[:, egg] = 'X'
+        df_output.loc[:, 'LEGEND'] = 'missing'
+        df_output.loc[:, 'printable'] = 'missing'
 
     # Reverse longitude sign if specified at input
     df_output['lon'] *= sign

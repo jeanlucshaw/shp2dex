@@ -38,26 +38,24 @@ $ shp2dex -h
 
 ## Installation
 
-Ensure the following packages are installed to your python environement
+Create a virtual environment containing this package's dependencies. In conda, either
 
 ```
-argparse
-os
-re
-warnings
-shapefile
-cartopy
-matplotlib
-shapely
-numpy
-pandas
-termcolor
+conda create -n shp2dex Python=3.12 pandas=2.2.2 cartopy=0.23.0 termcolor=2.4.0 xarray=2024.7.0
 ```
 
-Clone this repository into a the path of your Python environment. For Anaconda virutal environments, this could be
+should install all the appropriate dependencies. Alternatively, you can use the provided
+`yml` file to build the environment, i.e.,
 
 ```
-cd /opt/anaconda3/myEnv/lib/Python3.7/site-packages
+conda env create -f requirement.yml
+```
+
+the output of `pip freeze > requirements.txt` is also included for pip users. Once the
+environment is set up, navigate to the `site-packages` folder and clone this repository.
+
+```
+cd /path/to/anaconda/envs/shp2dex/lib/python3.12/site-packages
 git clone https://github.com/jeanlucshaw/shp2dex.git shp2dex
 ```
 
@@ -70,8 +68,8 @@ at `/usr/local/bin/` containing the following lines,
 /path/to/python /path/to/shp2dex/shp2dex.py "$@"
 ```
 
-The module `shp2dex` was designed using Python 3.7 . Although this version is now [no longer supported](https://devguide.python.org/versions/), users are recommended to use this version in a virutal environment with `shp2dex`. It may work
-fine with more recent Python versions but this has not been tested. 
+To test the installation, run `shp2dex -h` from the command line or run the included
+examples of command-line and scripted use cases.
 
 ## Note
 More background information can be found at the following links:
@@ -95,6 +93,26 @@ which demonstrate use of this module as part of a Python script, and at
 
 which demonstrates how to use the module via its command line interface.
 
+## NetCDF integration
+
+Although advantageous for software designed to ingest it, the .dex format can be cumbersome to integrate to new software because
+it mixes string characters and numbers in some data columns, and has different numbers of columns accros its rows. To facilitate
+the use of existing .dex file data bases, the `dex2nc` module included in this package reads the .dex format into `xarray` dataset objects.
+Conversion to netCDF, a common format for the storage of raster data can then be performed via user scripts:
+
+```
+from shp2dex.dex2nc import dex2ds
+
+ds = dex2ds('my_file_YYYYMMDD.dex')
+ds.to_netcdf('my_file_YYYYMMDD.nc')
+```
+
+or using the module as a command line application
+
+```
+$ python /path/to/dex2nc.py /path/to/my_file_YYYYMMDD.dex
+$ python /path/to/dex2nc.py /path/to/*.dex
+```
 
 
 
