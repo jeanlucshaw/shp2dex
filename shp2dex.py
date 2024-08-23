@@ -127,7 +127,7 @@ def in_polygon(xpts, ypts, x_poly, y_poly, lib='mpl'):
         poly = mpltPath.Path([[xp, yp] for (xp, yp) in zip(x_poly, y_poly)])
 
         # Bool vector
-        boolean =  poly.contains_points(pts)
+        boolean = poly.contains_points(pts)
 
     return boolean
 
@@ -247,13 +247,16 @@ def plot_cis_shp(sname, target=None, suffix=None, decimate=10, **ax_kw):
 
         # Add to plot
         if df_managed.iloc[i].LEGEND == 'L':
-            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k', linestyle='-', lw=0.5, zorder=df_size)
+            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k',
+                    linestyle='-', lw=0.5, zorder=df_size)
 
         elif target is None:
-            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k', linestyle='-', lw=0.5, zorder=i)
+            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k',
+                    linestyle='-', lw=0.5, zorder=i)
 
         elif i in target:
-            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k', linestyle='-', lw=0.5, zorder=i)
+            ax.fill(lon, lat, fc=colors[df_managed.iloc[i].LEGEND], ec='k',
+                    linestyle='-', lw=0.5, zorder=i)
 
     # Plot parameters
     ax.set(xlabel='Longitude', ylabel='Latitude', **ax_kw)
@@ -266,7 +269,7 @@ def plot_cis_shp(sname, target=None, suffix=None, decimate=10, **ax_kw):
 
 def _get_lon_lat_converter(filename):
     """
-    Return conversion function from map coordinates to longitudes and latitudes.
+    Return conversion function from map coordinates to longitudes and latitudes
 
     When a projection string file (.prj) is present next to the
     analysed shapefile, use the Cartopy package to define a conversion
@@ -505,14 +508,6 @@ def _manage_shapefile_types(dataframe):
         dataframe = dataframe.rename(mapper, axis=1)
 
         # Convert legend labels
-        # dataframe.at[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
-        # dataframe.at[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
-        # dataframe.at[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
-        # dataframe.at[(dataframe.LEGEND == 'Ice free') |
-        #              (dataframe.LEGEND == 'Bergy water') |
-        #              (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
-        # dataframe.at[(dataframe.LEGEND == 'Remote egg') |
-        #              (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
         dataframe.loc[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
         dataframe.loc[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
         dataframe.loc[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
@@ -541,10 +536,6 @@ def _manage_shapefile_types(dataframe):
         for i in dataframe.index.values:
             raw = dataframe.iloc[i][fields]
             translated = _newegg_2_oldegg(raw, 'bla', i)  # second argument for error handling
-            # print("")
-            # print(translated.keys(), type(translated.keys()), translated.values, type(translated.values))
-            # print("")
-            # dataframe.at[i, translated.keys()] = translated.values
             dataframe.loc[i, translated.keys()] = translated.values
 
     # Type C
@@ -747,93 +738,6 @@ def _newegg_2_oldegg(egg_dict, sname, i):
     return egg_dict
 
 
-# def _parse_prj(fname):
-#     """
-#     Parse shapefile (.prj) for projection parameters.
-
-#     Geographical projection information for shapefile data is
-#     contained in a companion file with the extension `.prj`. The
-#     Basemap class instance needs this information to convert
-#     polygon coordinates from map units (m) to longitudes and
-#     latitudes.
-
-#     Parameters
-#     ----------
-#     fname : str
-#         Name of the projection file.
-
-#     Returns
-#     -------
-#     proj : str
-#         Projection name abbreviated for input to Basemap.
-#     lat0 : float
-#         Latitude of origin.
-#     lon0 : float
-#         Longitude of origin.
-#     std1 : float
-#         Standard parallel 1 used by LCC projection.
-#     std2 : float
-#         Standard parallel 2 used by LCC projection.
-#     a : float
-#         Datum semi-major radius.
-#     ifp : float
-#         Inverse flattening parameter. Used to obtain the Datum
-#         semi-minor radius.
-
-#     Note
-#     ----
-#         For the moment, only Lambert conformal conic projections
-#         are supported.
-
-#     """
-
-#     # Init output
-#     proj = None
-#     lat0 = None
-#     lon0 = None
-#     std1 = None
-#     std2 = None
-#     a = None
-#     ifp = None
-
-#     # Read file
-#     file = open(fname, 'r')
-#     string = file.readline()
-
-#     # Set up regex
-#     rx_dict = {'proj': re.compile(r'PROJECTION\["(.*)"\],',
-#                                   re.IGNORECASE),
-#                'lat0': re.compile(r'PARAMETER\["latitude_of_origin",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'lon0': re.compile(r'PARAMETER\["central_meridian",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'std1': re.compile(r'PARAMETER\["standard_parallel_1",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'std2': re.compile(r'PARAMETER\["standard_parallel_2",([-\.\d]*)\]',
-#                                   re.IGNORECASE),
-#                'rsph': re.compile(r'SPHEROID\[.*,([-\.\d]*),([-\.\d]*)\]',
-#                                   re.IGNORECASE)}
-
-#     # Match regex
-#     for key, rx in rx_dict.items():
-#         match = rx.search(string, re.IGNORECASE)
-#         if match:
-#             if key == "proj":
-#                 if match.group(1) == "Lambert_Conformal_Conic":
-#                     proj = 'lcc'
-#             if key == "lat0":
-#                 lat0 = float(match.group(1))
-#             if key == "lon0":
-#                 lon0 = float(match.group(1))
-#             if key == "std1":
-#                 std1 = float(match.group(1))
-#             if key == "std2":
-#                 std2 = float(match.group(1))
-#             if key == "rsph":
-#                 a = float(match.group(1))
-#                 ifp = float(match.group(2))
-
-#     return proj, lat0, lon0, std1, std2, a, ifp
 def _parse_prj(fname):
     """
     Parse shapefile (.prj) for projection parameters.
@@ -878,9 +782,9 @@ def _parse_prj(fname):
                'std2': re.compile(r'PARAMETER\["standard_parallel_2",([-\.\d]*)\]',
                                   re.IGNORECASE),
                'feast': re.compile(r'PARAMETER\["False_Easting",([-\.\d]*)\]',
-                                  re.IGNORECASE),
+                                   re.IGNORECASE),
                'fnorth': re.compile(r'PARAMETER\["False_Northing",([-\.\d]*)\]',
-                                  re.IGNORECASE),
+                                    re.IGNORECASE),
                'rsph': re.compile(r'SPHEROID\[.*,([-\.\d]*),([-\.\d]*)\]',
                                   re.IGNORECASE)}
 
@@ -1126,7 +1030,6 @@ def _shp2dex(sname,
                     r = df_records.iloc[i].copy()
 
                     """ Legend assignments """
-                    ### Replace .at with .loc in this block ###
                     # Fast-ice
                     if ("F" == r.LEGEND) or r.E_FA == '8':
                         if fill_dataframe:
@@ -1152,7 +1055,6 @@ def _shp2dex(sname,
                         if fill_dataframe:
                             df_output.loc[target_index, 'LEGEND'] = 'Icebergs'
                         df_output.loc[target_index, 'printable'] = 'Icebergs'
-                    ### Replace .at with .loc in this block ###
 
                     # Egg code assignments
                     else:
