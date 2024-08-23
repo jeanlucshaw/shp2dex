@@ -21,3 +21,4 @@ six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
 termcolor @ file:///home/conda/feedstock_root/build_artifacts/termcolor_1704357939450/work
 tzdata @ file:///home/conda/feedstock_root/build_artifacts/python-tzdata_1707747584337/work
 wheel==0.44.0
+xarray @ file:///home/conda/feedstock_root/build_artifacts/xarray_1722348170975/work
