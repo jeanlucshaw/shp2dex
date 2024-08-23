@@ -1,55 +1,24 @@
-backcall==0.2.0
-brotlipy==0.7.0
-Cartopy @ file:///home/conda/feedstock_root/build_artifacts/cartopy_1589818690810/work
-certifi==2020.6.20
-cffi==1.14.0
-chardet==3.0.4
-cryptography==2.9.2
-cycler==0.10.0
-decorator==4.4.2
-GDAL==3.1.1
-gsw==3.3.1
-idna @ file:///tmp/build/80754af9/idna_1593446292537/work
-ipython @ file:///tmp/build/80754af9/ipython_1593447368578/work
-ipython-genutils==0.2.0
-jedi @ file:///tmp/build/80754af9/jedi_1592841891421/work
-kiwisolver==1.2.0
-matplotlib @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-base_1592576108701/work
-mkl-fft==1.1.0
-mkl-random==1.1.1
-mkl-service==2.3.0
-numpy==1.18.5
-obsub==0.2
-olefile==0.46
-OWSLib==0.19.2
-pandas @ file:///tmp/build/80754af9/pandas_1592841632039/work
-parso==0.7.0
-pexpect==4.8.0
-pickleshare==0.7.5
-Pillow==7.1.2
-prompt-toolkit==3.0.5
-ptyprocess==0.6.0
-pycparser==2.20
-PyCRC==1.21
-pyepsg==0.4.0
-Pygments==2.6.1
-pynmea2==1.15.0
-pyOpenSSL==19.1.0
-pyparsing==2.4.7
-pyproj @ file:///home/conda/feedstock_root/build_artifacts/pyproj_1588596070165/work
-pyshp==2.1.0
-PySocks==1.7.1
-python-dateutil==2.8.1
-pytz==2020.1
-PyYAML==5.3.1
-requests @ file:///tmp/build/80754af9/requests_1592841827918/work
-scipy @ file:///tmp/build/80754af9/scipy_1592930510235/work
-Shapely==1.7.0
-six==1.15.0
-termcolor==1.1.0
-tornado==6.0.4
-tqdm @ file:///tmp/build/80754af9/tqdm_1593446365756/work
-traitlets==4.3.3
-urllib3==1.25.9
-wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
-xarray==0.15.1
+Cartopy @ file:///home/conda/feedstock_root/build_artifacts/cartopy_1715897443297/work
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1720457958366/work/certifi
+contourpy @ file:///home/conda/feedstock_root/build_artifacts/contourpy_1712429918028/work
+cycler @ file:///home/conda/feedstock_root/build_artifacts/cycler_1696677705766/work
+fonttools @ file:///home/conda/feedstock_root/build_artifacts/fonttools_1720359030700/work
+kiwisolver @ file:///home/conda/feedstock_root/build_artifacts/kiwisolver_1695379925569/work
+matplotlib==3.9.2
+munkres==1.1.4
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1724034842610/work/dist/numpy-2.1.0-cp312-cp312-linux_x86_64.whl#sha256=033173968603765b713c5c24889ec19763a353fb19fa8d8bc3b90df39df3067b
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1718189413536/work
+pandas @ file:///home/conda/feedstock_root/build_artifacts/pandas_1715897630316/work
+pillow @ file:///home/conda/feedstock_root/build_artifacts/pillow_1719903548521/work
+pyparsing @ file:///home/conda/feedstock_root/build_artifacts/pyparsing_1709721012883/work
+pyproj @ file:///home/conda/feedstock_root/build_artifacts/pyproj_1722370419667/work
+pyshp @ file:///home/conda/feedstock_root/build_artifacts/pyshp_1659002966020/work
+python-dateutil @ file:///croot/python-dateutil_1716495738603/work
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1706886791323/work
+setuptools==72.2.0
+shapely @ file:///home/conda/feedstock_root/build_artifacts/shapely_1724108312098/work
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+termcolor @ file:///home/conda/feedstock_root/build_artifacts/termcolor_1704357939450/work
+tzdata @ file:///home/conda/feedstock_root/build_artifacts/python-tzdata_1707747584337/work
+wheel==0.44.0
+xarray @ file:///home/conda/feedstock_root/build_artifacts/xarray_1722348170975/work
