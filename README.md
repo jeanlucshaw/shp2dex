@@ -38,26 +38,25 @@ $ shp2dex -h
 
 ## Installation
 
-Clone this repository into your local machine at your preferred location.
+Create a virtual environment containing this package's dependencies. In conda, either
 
 ```
+conda create -n shp2dex Python=3.12 pandas=2.2.2 cartopy=0.23.0 termcolor=2.4.0 xarray=2024.7.0
+```
+
+should install all the appropriate dependencies. Alternatively, you can use the provided
+`yml` file to build the environment, i.e.,
+
+```
+conda env create -f requirement.yml
+```
+
+the output of `pip freeze > requirements.txt` is also included for pip users. Once the
+environment is set up, navigate to the `site-packages` folder and clone this repository.
+
+```
+cd /path/to/anaconda/envs/shp2dex/lib/python3.12/site-packages
 git clone https://github.com/jeanlucshaw/shp2dex.git shp2dex
-```
-
-
-The recommended way to use `shp2dex` is inside a virtual environment. To build a compatible environment
-with `conda`, navigate to the `shp2dex` folder and run:
-
-```
-conda env create -f requirements.yml
-```
-
-or to do the same using `pip`:
-
-```
-python -m venv .shp2dex
-source .shp2dex/bin/activate
-pip install -r requirements.txt
 ```
 
 For this utility to be available at the command line, add a
@@ -69,8 +68,8 @@ at `/usr/local/bin/` containing the following lines,
 /path/to/python /path/to/shp2dex/shp2dex.py "$@"
 ```
 
-The module `shp2dex` was designed using Python 3.7 . Although this version is now [no longer supported](https://devguide.python.org/versions/), users are recommended to use this version in a virutal environment with `shp2dex`. It may work
-fine with more recent Python versions but this has not been tested. 
+To test the installation, run `shp2dex -h` from the command line or run the included
+examples of command-line and scripted use cases.
 
 ## Note
 More background information can be found at the following links:
