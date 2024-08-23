@@ -18,5 +18,6 @@ pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1706886791323/work
 setuptools==72.2.0
 shapely @ file:///home/conda/feedstock_root/build_artifacts/shapely_1724108312098/work
 six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+termcolor @ file:///home/conda/feedstock_root/build_artifacts/termcolor_1704357939450/work
 tzdata @ file:///home/conda/feedstock_root/build_artifacts/python-tzdata_1707747584337/work
 wheel==0.44.0

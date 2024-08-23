@@ -71,7 +71,7 @@ import matplotlib.path as mpltPath
 from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
-# from termcolor import cprint, colored
+from termcolor import cprint, colored
 import shapefile
 
 
