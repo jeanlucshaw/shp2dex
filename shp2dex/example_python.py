@@ -4,7 +4,7 @@ CIS shapefile as a pandas dataframe in python. It can then be
 further processed, or printed to CSV for transfer to another
 program or programming language.
 """
-import shp2dex
+import shp2dex.shp2dex as shp2dex
 
 # Rasterize
 df = shp2dex._shp2dex('data/shapefile.shp', 'grid.csv')
