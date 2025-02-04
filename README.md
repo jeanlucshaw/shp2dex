@@ -44,9 +44,8 @@ Create a virtual environment containing this package's dependencies. In conda
 conda create -n shp2dex Python=3.12 pandas cartopy termcolor xarray pyproj ipython
 ```
 
-should install all the appropriate dependencies. The output of `pip freeze > requirements.txt` is also 
-included for pip users. Once the environment is set up, navigate to the `site-packages` folder and clone
-this repository.
+should install all the appropriate dependencies. This is the recommended method for setting up a
+virtual environment for `shp2dex`, and has been tested on MacOs, Windows and Linux.
 
 ```
 cd /path/to/anaconda/envs/shp2dex/lib/python3.12/site-packages
