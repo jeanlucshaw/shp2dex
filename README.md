@@ -45,7 +45,8 @@ conda create -n shp2dex Python=3.12 pandas cartopy termcolor xarray pyproj ipyth
 ```
 
 should install all the appropriate dependencies. This is the recommended method for setting up a
-virtual environment for `shp2dex`, and has been tested on MacOs, Windows and Linux.
+virtual environment for `shp2dex`, and has been tested on MacOs, Windows and Linux. Then,
+navigate to the virtual environment's `site-packages` directory and clone this git repository.
 
 ```
 cd /path/to/anaconda/envs/shp2dex/lib/python3.12/site-packages
