@@ -3,3 +3,6 @@ example_raster.csv
 filtered_results.reproduced.csv
 data/shapefile.dex
 *.egg-info/
+*.tif
+*.csv
+shp2dex/exemple_tif.py

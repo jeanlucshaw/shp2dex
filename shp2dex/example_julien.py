@@ -37,7 +37,7 @@ first ice class concentration, stage of developpment, and
 form of ice.
 
 """
-import shp2dex
+import shp2dex.shp2dex as shp2dex
 
 # Rasterize
 df = shp2dex._shp2dex('data/shapefile.shp', 'Grid_Julien_formatted.txt')

@@ -38,27 +38,18 @@ $ shp2dex -h
 
 ## Installation
 
-Ensure the following packages are installed to your python environement
+Create a virtual environment containing this package's dependencies. In conda
 
 ```
-argparse
-os
-re
-warnings
-shapefile
-cartopy
-matplotlib
-shapely
-numpy
-pandas
-xarray
-termcolor
+conda create -n shp2dex Python=3.12 pandas cartopy termcolor xarray pyproj ipython
 ```
 
-Clone this repository into a the path of your Python environment. For Anaconda virutal environments, this could be
+should install all the appropriate dependencies. This is the recommended method for setting up a
+virtual environment for `shp2dex`, and has been tested on MacOs, Windows and Linux. Then,
+navigate to the virtual environment's `site-packages` directory and clone this git repository.
 
 ```
-cd /opt/anaconda3/myEnv/lib/Python3.7/site-packages
+cd /path/to/anaconda/envs/shp2dex/lib/python3.12/site-packages
 git clone https://github.com/jeanlucshaw/shp2dex.git shp2dex
 ```
 
@@ -71,8 +62,8 @@ at `/usr/local/bin/` containing the following lines,
 /path/to/python /path/to/shp2dex/shp2dex.py "$@"
 ```
 
-The module `shp2dex` was designed using Python 3.7 . Although this version is now [no longer supported](https://devguide.python.org/versions/), users are recommended to use this version in a virutal environment with `shp2dex`. It may work
-fine with more recent Python versions but this has not been tested. 
+To test the installation, run `shp2dex -h` from the command line or run the included
+examples of command-line and scripted use cases.
 
 ## Note
 More background information can be found at the following links:
