@@ -1,0 +1,6 @@
+#!/bin/bash
+# shp2dex on the uv env (/opt/uv/envs/shp2dex, package in /opt/shp2dex).
+# Test twin of /usr/local/bin/shp2dex, which still runs the conda env.
+# Agg: matplotlib 3.2.2 cannot auto-select a backend with uv's standalone Python.
+export MPLBACKEND=${MPLBACKEND:-Agg}
+exec /opt/uv/envs/shp2dex/bin/shp2dex "$@"

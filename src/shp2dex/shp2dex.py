@@ -1249,7 +1249,8 @@ def _shp2dex(sname,
 
 
 # Command line interface
-if __name__ == '__main__':
+def main():
+    """Command line entry point (installed as the `shp2dex` command)."""
 
     # Set up parser
     parser = argparse.ArgumentParser(usage=__doc__)
@@ -1316,3 +1317,7 @@ if __name__ == '__main__':
             # Write to output
             df_dex.to_csv(
                 '%s.dex' % shp[0:-4], columns=['printable'], header=False, index=False)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,14 @@
+# Pins of /opt/uv/envs/shp2dex (Python 3.8). Same versions as the old conda env
+# where wheels exist; Cartopy/pyproj are newer (no cp38 wheel for 0.18).
+numpy==1.18.5
+pandas==1.0.5
+xarray==0.15.1
+Shapely==1.7.0
+pyshp==2.1.0
+termcolor==1.1.0
+matplotlib==3.2.2
+Cartopy==0.21.1
+pyproj==3.5.0
+python-dateutil==2.8.1
+pytz==2020.1
+six==1.15.0
