@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shp2dex"
+version = "0.1.0"
+description = "Convert Canadian Ice Service (CIS) ESRI shapefiles to dex ascii format"
+readme = "README.md"
+requires-python = ">=3.8"
+# Loose on purpose. The tested pins live in requirements.txt / the uv env.
+dependencies = [
+    "numpy",
+    "pandas",
+    "xarray",
+    "shapely",
+    "pyshp",
+    "cartopy",
+    "matplotlib",
+    "termcolor",
+]
+
+[project.scripts]
+shp2dex = "shp2dex.shp2dex:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
