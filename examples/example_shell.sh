@@ -4,4 +4,4 @@
 # CIS shapefile from a UNIX shell and output a dex file
 # named like the shapefile, next to the shapefile
 
-python shp2dex.py -g grid.csv data/shapefile.shp
+shp2dex -g grid.csv data/shapefile.shp

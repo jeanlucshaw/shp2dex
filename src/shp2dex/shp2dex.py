@@ -65,7 +65,6 @@ import argparse
 import os
 import re
 from warnings import warn
-import shapefile
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.path as mpltPath
@@ -73,6 +72,7 @@ from shapely.geometry import Point, Polygon
 import numpy as np
 import pandas as pd
 from termcolor import cprint, colored
+import shapefile
 
 
 __all__ = ['in_polygon',
@@ -548,13 +548,13 @@ def _manage_shapefile_types(dataframe):
         dataframe = dataframe.rename(mapper, axis=1)
 
         # Convert legend labels
-        dataframe.at[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
-        dataframe.at[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
-        dataframe.at[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
-        dataframe.at[(dataframe.LEGEND == 'Ice free') |
+        dataframe.loc[(dataframe.LEGEND == 'Fast ice'), 'LEGEND'] = 'F'
+        dataframe.loc[(dataframe.LEGEND == 'Land'), 'LEGEND'] = 'L'
+        dataframe.loc[(dataframe.LEGEND == 'No data'), 'LEGEND'] = 'N'
+        dataframe.loc[(dataframe.LEGEND == 'Ice free') |
                      (dataframe.LEGEND == 'Bergy water') |
                      (dataframe.LEGEND == 'Open water'), 'LEGEND'] = 'W'
-        dataframe.at[(dataframe.LEGEND == 'Remote egg') |
+        dataframe.loc[(dataframe.LEGEND == 'Remote egg') |
                      (dataframe.LEGEND == 'Egg'), 'LEGEND'] = 'I'
     # Type B
     elif ('POLY_TYPE' in dataframe.keys()) and ('E_CT' not in dataframe.keys()):
@@ -576,7 +576,7 @@ def _manage_shapefile_types(dataframe):
         for i in dataframe.index.values:
             raw = dataframe.iloc[i][fields]
             translated = _newegg_2_oldegg(raw, 'bla', i)
-            dataframe.at[i, translated.keys()] = translated.values
+            dataframe.loc[i, translated.keys()] = translated.values
 
     # Type C
     elif 'SGD_POLY_T' in dataframe.keys():
@@ -1154,34 +1154,34 @@ def _shp2dex(sname,
                 # Index of points to write
                 if target_index.size > 0:
                     # For improved readability
-                    r = df_records.iloc[i]
+                    r = df_records.iloc[i].copy()
 
                     """ Legend assignments """
                     # Fast-ice
                     if ("F" == r.LEGEND) or r.E_FA == '8':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Fast-ice'
-                        df_output.at[target_index, 'printable'] = 'Fast-ice'
+                            df_output.loc[target_index, 'LEGEND'] = 'Fast-ice'
+                        df_output.loc[target_index, 'printable'] = 'Fast-ice'
                     # On land
                     elif r.LEGEND == 'L':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Land'
-                        df_output.at[target_index, 'printable'] = 'Land'
+                            df_output.loc[target_index, 'LEGEND'] = 'Land'
+                        df_output.loc[target_index, 'printable'] = 'Land'
                     # Missing data
                     elif r.LEGEND == 'N':
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'missing'
-                        df_output.at[target_index, 'printable'] = 'missing'
+                            df_output.loc[target_index, 'LEGEND'] = 'missing'
+                        df_output.loc[target_index, 'printable'] = 'missing'
                     # Open water
                     elif (r.LEGEND == 'W') or (r.E_CT == 'X' and r.E_CA == 'X'):
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'IF'
-                        df_output.at[target_index, 'printable'] = 'IF'
+                            df_output.loc[target_index, 'LEGEND'] = 'IF'
+                        df_output.loc[target_index, 'printable'] = 'IF'
                     # Icebergs
                     elif (r.E_SA == '98' and r.E_FA == '10'):
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Icebergs'
-                        df_output.at[target_index, 'printable'] = 'Icebergs'
+                            df_output.loc[target_index, 'LEGEND'] = 'Icebergs'
+                        df_output.loc[target_index, 'printable'] = 'Icebergs'
 
                     # Egg code assignments
                     else:
@@ -1211,31 +1211,31 @@ def _shp2dex(sname,
 
                         # Write to dataframe
                         if fill_dataframe:
-                            df_output.at[target_index, 'LEGEND'] = 'Egg'
-                        df_output.at[target_index, 'printable'] = format_egg
+                            df_output.loc[target_index, 'LEGEND'] = 'Egg'
+                        df_output.loc[target_index, 'printable'] = format_egg
 
                     # Assign egg code
                     if fill_dataframe:
                         for egg in egg_strs:
-                            df_output.at[target_index, egg] = r[egg]
+                            df_output.loc[target_index, egg] = r[egg]
 
                     # No need to check these grid points again
-                    df_output.at[target_index, 'assigned'] = True
+                    df_output.loc[target_index, 'assigned'] = True
 
         # Unassigned points are considered missing
         if fill_dataframe:
             for egg in egg_strs:
-                df_output.at[(~df_output['assigned']), egg] = 'X'
-            df_output.at[(~df_output['assigned']), 'LEGEND'] = 'missing'
-        df_output.at[(~df_output['assigned']), 'printable'] = 'missing'
+                df_output.loc[(~df_output['assigned']), egg] = 'X'
+            df_output.loc[(~df_output['assigned']), 'LEGEND'] = 'missing'
+        df_output.loc[(~df_output['assigned']), 'printable'] = 'missing'
 
     else:
         # This happens when the shapefile is empty
         warn('Shapefile is empty: returning "missing" for all grid points in dex')
         for egg in egg_strs:
-            df_output.at[:, egg] = 'X'
-        df_output.at[:, 'LEGEND'] = 'missing'
-        df_output.at[:, 'printable'] = 'missing'
+            df_output.loc[:, egg] = 'X'
+        df_output.loc[:, 'LEGEND'] = 'missing'
+        df_output.loc[:, 'printable'] = 'missing'
 
     # Reverse longitude sign if specified at input
     df_output['lon'] *= sign
