@@ -38,29 +38,20 @@ $ shp2dex -h
 
 ## Installation
 
-Create a virtual environment containing this package's dependencies. In conda
+Clone this repository and install it, with pip or uv, into a virtual environment.
+The `shp2dex` command is installed with the package.
 
 ```
-conda create -n shp2dex Python=3.12 pandas cartopy termcolor xarray pyproj ipython
+git clone https://github.com/jeanlucshaw/shp2dex.git
+uv venv /path/to/env && source /path/to/env/bin/activate
+uv pip install -e shp2dex        # or: pip install -e shp2dex
 ```
 
-should install all the appropriate dependencies. This is the recommended method for setting up a
-virtual environment for `shp2dex`, and has been tested on MacOs, Windows and Linux. Then,
-navigate to the virtual environment's `site-packages` directory and clone this git repository.
-
-```
-cd /path/to/anaconda/envs/shp2dex/lib/python3.12/site-packages
-git clone https://github.com/jeanlucshaw/shp2dex.git shp2dex
-```
-
-For this utility to be available at the command line, add a
-file called `shp2dex` on your shell path, for example
-at `/usr/local/bin/` containing the following lines,
-
-```
-#!/path/to/bash
-/path/to/python /path/to/shp2dex/shp2dex.py "$@"
-```
+`requirements-uv.txt` lists a set of package versions tested together
+(`uv pip install -r requirements-uv.txt`). Dependencies in `pyproject.toml` are
+left unpinned. A conda environment (`conda create -n shp2dex python=3.12 pandas
+cartopy termcolor xarray pyproj pyshp`) followed by `pip install -e shp2dex`
+also works.
 
 To test the installation, run `shp2dex -h` from the command line or run the included
 examples of command-line and scripted use cases.
